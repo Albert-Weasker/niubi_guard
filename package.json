@@ -1,0 +1,45 @@
+{
+  "name": "niubi-guard",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Open-source GitHub repository abuse detection and response system.",
+  "type": "module",
+  "bin": {
+    "niubi-guard": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "next build && tsc -p tsconfig.build.json",
+    "build:lib": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx src/cli.ts",
+    "dev:web": "next dev",
+    "scan": "tsx src/cli.ts scan"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^14.2.30",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.25.46"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "Apache-2.0",
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

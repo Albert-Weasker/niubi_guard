@@ -1,0 +1,39 @@
+{
+  "repositories": ["owner/repo"],
+  "rules": {
+    "keywords": ["spam template", "copy-paste", "mass mention", "repeated link"],
+    "denyUsers": [],
+    "allowPhrases": [],
+    "allowUsers": []
+  },
+  "scan": {
+    "includeIssues": true,
+    "includeComments": true,
+    "state": "open",
+    "since": null,
+    "maxPages": 5
+  },
+  "actions": {
+    "deleteComments": false,
+    "closeIssues": false,
+    "lockIssues": false,
+    "deleteIssues": false,
+    "blockUsers": false,
+    "setInteractionLimits": false
+  },
+  "interactionLimits": {
+    "limit": "existing_users",
+    "expiry": "one_month"
+  },
+  "llm": {
+    "enabled": false,
+    "baseUrl": "https://api.openai.com/v1",
+    "apiKey": "",
+    "model": "gpt-4o-mini",
+    "temperature": 0.1,
+    "confidenceThreshold": 0.8,
+    "reviewMode": "review_only",
+    "systemPrompt": "You are Niubi Guard, a GitHub repository abuse detection classifier. Detect malicious GitHub Issues or comments including spam, bot-like attacks, coordinated harassment, template-based copy-paste attacks, mass-mention abuse, and reputation-pressure campaigns. Do not mark good-faith criticism, real security reports, normal bug reports, or constructive feedback as malicious. Return strict JSON only.",
+    "userPromptTemplate": "Repository: {{repoFullName}}\nType: {{sourceType}}\nAuthor: {{actorLogin}}\nTitle: {{title}}\nBody:\n{{body}}\n\nReturn JSON with malicious, confidence, label, reason, evidence."
+  }
+}

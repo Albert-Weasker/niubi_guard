@@ -1,0 +1,9 @@
+<svg width="420" height="96" viewBox="0 0 420 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="96" height="96" rx="22" fill="#143D59"/>
+  <path d="M48 16L72 25.5V45.5C72 60.4 62.7 73.5 48 81C33.3 73.5 24 60.4 24 45.5V25.5L48 16Z" fill="#F8FBFF" fill-opacity="0.08" stroke="#9DE6DD" stroke-width="3"/>
+  <path d="M35 48C38.7 42.1 43 39.2 48 39.2C53 39.2 57.3 42.1 61 48C57.3 53.9 53 56.8 48 56.8C43 56.8 38.7 53.9 35 48Z" stroke="#FBBF24" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="48" cy="48" r="5.5" fill="#FBBF24"/>
+  <path d="M48 28V34M48 62V68M28 48H34M62 48H68" stroke="#9DE6DD" stroke-width="3" stroke-linecap="round"/>
+  <text x="118" y="44" fill="#111827" font-family="Inter, ui-sans-serif, system-ui" font-size="30" font-weight="800">Niubi Guard</text>
+  <text x="119" y="68" fill="#52657A" font-family="Inter, ui-sans-serif, system-ui" font-size="15" font-weight="600">Open-source GitHub abuse defense</text>
+</svg>
