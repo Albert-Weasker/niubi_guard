@@ -3,9 +3,53 @@ import type { GuardEvent, GuardIssueState, InteractionExpiry, InteractionLimit }
 
 export class GitHubGuardClient {
   private readonly octokit: Octokit
+  private static readonly RATE_LIMIT_THRESHOLD = 30
 
   constructor(token: string) {
     this.octokit = new Octokit({ auth: token })
+  }
+
+  private async checkRateLimitBeforeNextPage(headers: Record<string, string | number | undefined>): Promise<void> {
+    const remaining = parseHeaderNumber(headers['x-ratelimit-remaining'])
+    const resetEpoch = parseHeaderNumber(headers['x-ratelimit-reset'])
+    if (remaining === null || resetEpoch === null) return
+    if (remaining > GitHubGuardClient.RATE_LIMIT_THRESHOLD) return
+
+    const waitSeconds = Math.ceil(resetEpoch - Date.now() / 1000 + 1)
+    if (waitSeconds <= 0) return
+
+    const limit = String(headers['x-ratelimit-limit'] ?? '?')
+    process.stderr.write(
+      `[niubi-guard] Rate limit approaching (${remaining}/${limit}), waiting ${waitSeconds}s until reset\n`
+    )
+    await sleep(waitSeconds * 1000)
+  }
+
+  /**
+   * Fetches a single page with automatic retry on secondary rate limits (429 / 403+retry-after).
+   * Returns headers so the caller can throttle remaining requests via {@link checkRateLimitBeforeNextPage}.
+   */
+  private async fetchPage<T>(
+    fn: () => Promise<{ data: T; headers: Record<string, string | number | undefined>; status: number }>
+  ): Promise<{ data: T; headers: Record<string, string | number | undefined> }> {
+    const maxRetries = 3
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const { data, headers } = await fn()
+        return { data, headers }
+      } catch (error: unknown) {
+        const wait = getRateLimitRetryDelay(error)
+        if (wait !== null && attempt < maxRetries - 1) {
+          process.stderr.write(
+            `[niubi-guard] Rate limited, retrying after ${wait}s (attempt ${attempt + 1}/${maxRetries})\n`
+          )
+          await sleep(wait * 1000)
+          continue
+        }
+        throw error
+      }
+    }
+    throw new Error('Rate limit retries exhausted')
   }
 
   async listIssueEvents(repoFullName: string, options: {
@@ -17,16 +61,18 @@ export class GitHubGuardClient {
     const events: GuardEvent[] = []
 
     for (let page = 1; page <= options.maxPages; page += 1) {
-      const { data } = await this.octokit.rest.issues.listForRepo({
-        owner,
-        repo,
-        state: options.state,
-        sort: 'updated',
-        direction: 'desc',
-        since: options.since || undefined,
-        per_page: 100,
-        page,
-      })
+      const { data, headers } = await this.fetchPage(() =>
+        this.octokit.rest.issues.listForRepo({
+          owner,
+          repo,
+          state: options.state,
+          sort: 'updated',
+          direction: 'desc',
+          since: options.since || undefined,
+          per_page: 100,
+          page,
+        })
+      )
 
       if (data.length === 0) break
 
@@ -51,6 +97,9 @@ export class GitHubGuardClient {
       }
 
       if (data.length < 100) break
+      if (page < options.maxPages) {
+        await this.checkRateLimitBeforeNextPage(headers)
+      }
     }
 
     return events
@@ -64,15 +113,17 @@ export class GitHubGuardClient {
     const events: GuardEvent[] = []
 
     for (let page = 1; page <= options.maxPages; page += 1) {
-      const { data } = await this.octokit.rest.issues.listCommentsForRepo({
-        owner,
-        repo,
-        sort: 'updated',
-        direction: 'desc',
-        since: options.since || undefined,
-        per_page: 100,
-        page,
-      })
+      const { data, headers } = await this.fetchPage(() =>
+        this.octokit.rest.issues.listCommentsForRepo({
+          owner,
+          repo,
+          sort: 'updated',
+          direction: 'desc',
+          since: options.since || undefined,
+          per_page: 100,
+          page,
+        })
+      )
 
       if (data.length === 0) break
 
@@ -96,6 +147,9 @@ export class GitHubGuardClient {
       }
 
       if (data.length < 100) break
+      if (page < options.maxPages) {
+        await this.checkRateLimitBeforeNextPage(headers)
+      }
     }
 
     return events
@@ -167,4 +221,49 @@ export function splitRepo(repoFullName: string) {
   const [owner, repo] = repoFullName.split('/')
   if (!owner || !repo) throw new Error(`Invalid repository name: ${repoFullName}`)
   return { owner, repo }
+}
+
+function getRateLimitRetryDelay(error: unknown) {
+  if (!isObject(error)) return null
+
+  const status = typeof error.status === 'number' ? error.status : null
+  if (status !== 403 && status !== 429) return null
+
+  const headers = getErrorHeaders(error)
+  const retryAfter = parseHeaderNumber(headers['retry-after'])
+  if (retryAfter !== null && retryAfter > 0) {
+    return Math.max(retryAfter, 10)
+  }
+
+  const remaining = parseHeaderNumber(headers['x-ratelimit-remaining'])
+  const resetEpoch = parseHeaderNumber(headers['x-ratelimit-reset'])
+  if (remaining !== 0 || resetEpoch === null) return null
+
+  const waitSeconds = Math.ceil(resetEpoch - Date.now() / 1000 + 1)
+  return waitSeconds > 0 ? waitSeconds : null
+}
+
+function getErrorHeaders(error: Record<string, unknown>) {
+  if (isObject(error.response) && isObject(error.response.headers)) {
+    return error.response.headers
+  }
+  if (isObject(error.headers)) {
+    return error.headers
+  }
+  return {}
+}
+
+function parseHeaderNumber(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  if (typeof value !== 'string') return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
