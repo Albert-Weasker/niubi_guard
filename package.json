@@ -30,7 +30,7 @@
     "check": "pnpm typecheck && pnpm test && pnpm build:lib",
     "prepack": "pnpm build:lib",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --import tsx --test tests/**/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
     "dev": "tsx src/cli.ts",
     "dev:web": "next dev",
     "start:web": "next start",
