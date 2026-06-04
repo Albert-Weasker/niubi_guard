@@ -4,16 +4,57 @@
   "private": false,
   "description": "Open-source GitHub repository abuse detection and response system.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "niubi-guard": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "guard.config.example.json",
+    "README.md",
+    "README.zh-CN.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "next build && tsc -p tsconfig.build.json",
     "build:lib": "tsc -p tsconfig.build.json",
+    "check": "pnpm typecheck && pnpm test && pnpm build:lib",
+    "prepack": "pnpm build:lib",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "dev": "tsx src/cli.ts",
     "dev:web": "next dev",
+    "start:web": "next start",
     "scan": "tsx src/cli.ts scan"
+  },
+  "keywords": [
+    "github",
+    "moderation",
+    "abuse-detection",
+    "spam",
+    "security",
+    "cli"
+  ],
+  "homepage": "https://github.com/Albert-Weasker/niubi_guard#readme",
+  "bugs": {
+    "url": "https://github.com/Albert-Weasker/niubi_guard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Albert-Weasker/niubi_guard.git"
+  },
+  "packageManager": "pnpm@10.1.0",
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@octokit/rest": "^20.1.1",

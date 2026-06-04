@@ -1,0 +1,39 @@
+name: Bug report
+description: Report a reproducible problem in Niubi Guard.
+title: '[Bug]: '
+labels:
+  - bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem and the behavior you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include commands, config snippets, or sample events when possible.
+      placeholder: |
+        1. Run ...
+        2. Configure ...
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: niubi-guard 0.1.0
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Node.js version, package manager, operating system, and deployment target.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      render: shell

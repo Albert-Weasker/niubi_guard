@@ -6,7 +6,7 @@
 
 A free, open-source defense system that protects GitHub maintainers from spam, harassment, and coordinated abuse.
 
-[Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/niubistar/niubi-guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
+[Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
 
 [What it does](#what-it-does) · [Install](#install) · [Web UI](#web-ui) · [AI Detection](#ai-detection) · [Configuration](#configuration) · [CLI](#cli) · [Contributing](#contributing)
 
@@ -14,7 +14,7 @@ Niubi Guard helps maintainers defend their repositories without hiding the polic
 
 We built it because maintainers reported coordinated attacks: hostile Issues, repeated copy-paste accusations, and reputation-pressure campaigns. More maintainers are seeing the same pattern. Normal project promotion is allowed. Coordinated harassment is not.
 
-> **Don't want to self-host?** Use the free hosted version at [niubistar.com/guard](https://www.niubistar.com/guard) — no configuration needed. The open-source version is continuously improved. Issues and feedback are welcome on [GitHub](https://github.com/niubistar/niubi-guard/issues).
+> **Don't want to self-host?** Use the free hosted version at [niubistar.com/guard](https://www.niubistar.com/guard) — no configuration needed. The open-source version is continuously improved. Issues and feedback are welcome on [GitHub](https://github.com/Albert-Weasker/niubi_guard/issues).
 
 ## What it does
 
@@ -30,9 +30,19 @@ We built it because maintainers reported coordinated attacks: hostile Issues, re
 
 ## Install
 
+Install the CLI from npm:
+
 ```bash
-git clone https://github.com/niubistar/niubi-guard.git
-cd niubi-guard
+npm install -g niubi-guard
+niubi-guard init
+niubi-guard scan --config guard.config.json
+```
+
+Or run from source:
+
+```bash
+git clone https://github.com/Albert-Weasker/niubi_guard.git
+cd niubi_guard
 pnpm install
 ```
 
@@ -48,7 +58,15 @@ Run a CLI dry-run:
 
 ```bash
 export GITHUB_TOKEN=github_pat_xxx
+pnpm dev -- init
 pnpm scan -- --config guard.config.json
+```
+
+Run with Docker:
+
+```bash
+docker build -t niubi-guard .
+docker run --rm -p 3000:3000 niubi-guard
 ```
 
 ## Web UI
@@ -148,19 +166,36 @@ Destructive actions are disabled by default. Maintainers can enable them per rep
 
 ## CLI
 
+Create a starter config:
+
+```bash
+niubi-guard init
+```
+
 Dry-run:
 
 ```bash
-pnpm scan -- --config guard.config.json
+niubi-guard scan --config guard.config.json
 ```
 
 Apply enabled actions:
 
 ```bash
-pnpm scan -- --config guard.config.json --apply
+niubi-guard scan --config guard.config.json --apply
 ```
 
 Without `--apply`, Niubi Guard only prints detections and planned actions.
+
+## Development
+
+```bash
+pnpm install
+pnpm check
+pnpm build
+npm pack --dry-run
+```
+
+The npm package publishes the CLI/library surface from `dist/`. The Next.js Web UI is built and deployed separately through `pnpm build`, `pnpm start:web`, or the included Dockerfile.
 
 ## Contributing
 
@@ -173,6 +208,8 @@ We welcome:
 - language translations
 - UI and accessibility improvements
 - GitHub App, GitHub Action, and self-hosted deployment ideas
+
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md), and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before opening issues or pull requests.
 
 Niubi Guard is a defensive project. It does not provide growth services, manipulate metrics, or declare official truth. It gives maintainers a transparent risk detection and response system they can control.
 

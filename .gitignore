@@ -2,5 +2,8 @@ node_modules
 dist
 .next
 .env
+guard.config.json
+*.tsbuildinfo
 .DS_Store
 *.log
+*.tgz
