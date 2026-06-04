@@ -4,6 +4,13 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: Publish the current ref to npm
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -37,10 +44,13 @@ jobs:
       - name: Check
         run: pnpm check
 
+      - name: Verify npm package
+        run: npm pack --dry-run
+
       - name: Publish to npm
-        if: env.NODE_AUTH_TOKEN != ''
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_npm && env.NODE_AUTH_TOKEN != ''
         run: npm publish --provenance
 
       - name: Skip npm publish
-        if: env.NODE_AUTH_TOKEN == ''
-        run: echo "NPM_TOKEN is not configured; skipping npm publish."
+        if: github.event_name != 'workflow_dispatch' || !inputs.publish_npm || env.NODE_AUTH_TOKEN == ''
+        run: echo "npm publish skipped. Use workflow_dispatch with publish_npm=true and a valid NPM_TOKEN to publish."
