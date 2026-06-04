@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "niubi-guard": "./dist/cli.js"
+    "niubi-guard": "dist/cli.js"
   },
   "files": [
     "dist",
