@@ -34,28 +34,43 @@ export async function classifyEventWithLlm(event: GuardEvent, config: GuardConfi
     throw new Error('LLM detection is enabled but llm.model is empty')
   }
 
-  const response = await fetch(`${trimTrailingSlash(config.llm.baseUrl)}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${config.llm.apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: config.llm.model,
-      temperature: config.llm.temperature,
-      response_format: { type: 'json_object' },
-      messages: [
-        {
-          role: 'system',
-          content: config.llm.systemPrompt,
-        },
-        {
-          role: 'user',
-          content: renderPrompt(config.llm.userPromptTemplate, event),
-        },
-      ],
-    }),
-  })
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30_000)
+
+  let response: Response
+  try {
+    response = await fetch(`${trimTrailingSlash(config.llm.baseUrl)}/chat/completions`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${config.llm.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: config.llm.model,
+        temperature: config.llm.temperature,
+        response_format: { type: 'json_object' },
+        messages: [
+          {
+            role: 'system',
+            content: config.llm.systemPrompt,
+          },
+          {
+            role: 'user',
+            content: renderPrompt(config.llm.userPromptTemplate, event),
+          },
+        ],
+      }),
+    })
+  } catch (fetchError) {
+    clearTimeout(timeout)
+    if (fetchError instanceof DOMException && fetchError.name === 'AbortError') {
+      throw new Error('LLM request timed out after 30 seconds')
+    }
+    throw fetchError
+  }
+
+  clearTimeout(timeout)
 
   if (!response.ok) {
     const body = await response.text()
