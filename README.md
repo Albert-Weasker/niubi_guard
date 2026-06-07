@@ -213,6 +213,10 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md), [SECURITY.md](./SECURITY.md), 
 
 Niubi Guard is a defensive project. It does not provide growth services, manipulate metrics, or declare official truth. It gives maintainers a transparent risk detection and response system they can control.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Albert-Weasker/niubi_guard&type=Date)](https://www.star-history.com/#Albert-Weasker/niubi_guard&Date)
+
 ## Roadmap
 
 - `v0.1`: rule detection, AI detection, web UI, audit output, manual response
