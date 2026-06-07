@@ -4,6 +4,7 @@ import type { GuardEvent, GuardIssueState, InteractionExpiry, InteractionLimit }
 export class GitHubGuardClient {
   private readonly octokit: Octokit
   private static readonly RATE_LIMIT_THRESHOLD = 30
+  private static readonly MAX_RATE_LIMIT_WAIT_SECONDS = 120
 
   constructor(token: string) {
     this.octokit = new Octokit({ auth: token })
@@ -15,8 +16,16 @@ export class GitHubGuardClient {
     if (remaining === null || resetEpoch === null) return
     if (remaining > GitHubGuardClient.RATE_LIMIT_THRESHOLD) return
 
-    const waitSeconds = Math.ceil(resetEpoch - Date.now() / 1000 + 1)
+    const waitSeconds = getResetWaitSeconds(resetEpoch)
     if (waitSeconds <= 0) return
+    if (waitSeconds > GitHubGuardClient.MAX_RATE_LIMIT_WAIT_SECONDS) {
+      const limit = String(headers['x-ratelimit-limit'] ?? '?')
+      throw new Error(
+        `GitHub rate limit is low (${remaining}/${limit}) and resets in ${waitSeconds}s. `
+        + `This exceeds the ${GitHubGuardClient.MAX_RATE_LIMIT_WAIT_SECONDS}s automatic wait limit; `
+        + 'try again later or reduce scan.maxPages.'
+      )
+    }
 
     const limit = String(headers['x-ratelimit-limit'] ?? '?')
     process.stderr.write(
@@ -38,7 +47,9 @@ export class GitHubGuardClient {
         const { data, headers } = await fn()
         return { data, headers }
       } catch (error: unknown) {
-        const wait = getRateLimitRetryDelay(error)
+        const wait = getRateLimitRetryDelay(error, {
+          maxAutoWaitSeconds: GitHubGuardClient.MAX_RATE_LIMIT_WAIT_SECONDS,
+        })
         if (wait !== null && attempt < maxRetries - 1) {
           process.stderr.write(
             `[niubi-guard] Rate limited, retrying after ${wait}s (attempt ${attempt + 1}/${maxRetries})\n`
@@ -223,7 +234,10 @@ export function splitRepo(repoFullName: string) {
   return { owner, repo }
 }
 
-function getRateLimitRetryDelay(error: unknown) {
+export function getRateLimitRetryDelay(error: unknown, options: {
+  nowSeconds?: number
+  maxAutoWaitSeconds?: number
+} = {}) {
   if (!isObject(error)) return null
 
   const status = typeof error.status === 'number' ? error.status : null
@@ -232,15 +246,15 @@ function getRateLimitRetryDelay(error: unknown) {
   const headers = getErrorHeaders(error)
   const retryAfter = parseHeaderNumber(headers['retry-after'])
   if (retryAfter !== null && retryAfter > 0) {
-    return Math.max(retryAfter, 10)
+    return capWaitSeconds(Math.max(retryAfter, 10), options.maxAutoWaitSeconds)
   }
 
   const remaining = parseHeaderNumber(headers['x-ratelimit-remaining'])
   const resetEpoch = parseHeaderNumber(headers['x-ratelimit-reset'])
   if (remaining !== 0 || resetEpoch === null) return null
 
-  const waitSeconds = Math.ceil(resetEpoch - Date.now() / 1000 + 1)
-  return waitSeconds > 0 ? waitSeconds : null
+  const waitSeconds = getResetWaitSeconds(resetEpoch, options.nowSeconds)
+  return waitSeconds > 0 ? capWaitSeconds(waitSeconds, options.maxAutoWaitSeconds) : null
 }
 
 function getErrorHeaders(error: Record<string, unknown>) {
@@ -253,11 +267,19 @@ function getErrorHeaders(error: Record<string, unknown>) {
   return {}
 }
 
-function parseHeaderNumber(value: unknown) {
+export function parseHeaderNumber(value: unknown) {
   if (typeof value === 'number' && Number.isFinite(value)) return value
   if (typeof value !== 'string') return null
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : null
+}
+
+function getResetWaitSeconds(resetEpoch: number, nowSeconds = Date.now() / 1000) {
+  return Math.ceil(resetEpoch - nowSeconds + 1)
+}
+
+function capWaitSeconds(waitSeconds: number, maxAutoWaitSeconds = Infinity) {
+  return waitSeconds <= maxAutoWaitSeconds ? waitSeconds : null
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
