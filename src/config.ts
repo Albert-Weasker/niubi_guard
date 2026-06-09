@@ -6,6 +6,13 @@ const interactionLimitSchema = z.enum(['existing_users', 'contributors_only', 'c
 const interactionExpirySchema = z.enum(['one_day', 'three_days', 'one_week', 'one_month', 'six_months'])
 const llmReviewModeSchema = z.enum(['review_only', 'auto_plan'])
 
+const coldStartAccountSchema = z.object({
+  enabled: z.boolean().default(false),
+  maxAccountAgeDays: z.number().int().min(1).max(3650).default(30),
+  requireEmptyBio: z.boolean().default(true),
+  requireMissingAvatar: z.boolean().default(false),
+  minimumSignals: z.number().int().min(1).max(3).default(2),
+}).default({})
 
 export const guardConfigSchema = z.object({
   repositories: z.array(z.string().regex(/^[^/\s]+\/[^/\s]+$/)).min(1),
@@ -14,6 +21,7 @@ export const guardConfigSchema = z.object({
     denyUsers: z.array(z.string().min(1)).default([]),
     allowPhrases: z.array(z.string().min(1)).default([]),
     allowUsers: z.array(z.string().min(1)).default([]),
+    coldStartAccounts: coldStartAccountSchema,
   }).default({}),
   scan: z.object({
     includeIssues: z.boolean().default(true),

@@ -17,14 +17,18 @@ export async function detectEvent(event: GuardEvent, config: GuardConfig): Promi
 
   const denyUsers = new Set(config.rules.denyUsers.map((item) => item.toLowerCase()))
   const denyUserMatched = actorLogin ? denyUsers.has(actorLogin) : false
+  const coldStartReasons = getColdStartReasons(event, config)
+  const coldStartMatched = coldStartReasons.length >= config.rules.coldStartAccounts.minimumSignals
   const labels: GuardDetection['labels'] = []
 
   if (matchedKeywords.length > 0) labels.push('keyword_match')
   if (denyUserMatched) labels.push('deny_user_match')
+  if (coldStartMatched) labels.push('cold_start_account')
 
   const ruleReason = [
     matchedKeywords.length > 0 ? `keyword_match:${matchedKeywords.join(',')}` : '',
     denyUserMatched && actorLogin ? `deny_user_match:${actorLogin}` : '',
+    coldStartMatched && actorLogin ? `cold_start_account:${actorLogin}:${coldStartReasons.join(',')}` : '',
   ].filter(Boolean).join(';')
   const llmResult = config.llm.enabled ? await classifyEventWithLlm(event, config) : undefined
   const llmMatched = Boolean(
@@ -38,12 +42,13 @@ export async function detectEvent(event: GuardEvent, config: GuardConfig): Promi
     ? `llm_malicious:${llmResult.label}:${llmResult.confidence.toFixed(2)}`
     : ''
   const reason = [ruleReason, llmReason].filter(Boolean).join(';')
-  const ruleScore = matchedKeywords.length * 25 + (denyUserMatched ? 80 : 0)
+  const ruleScore = matchedKeywords.length * 25 + (denyUserMatched ? 80 : 0) + (coldStartMatched ? 45 : 0)
   const llmScore = llmMatched && llmResult ? Math.round(llmResult.confidence * 100) : 0
   const riskScore = Math.min(100, Math.max(ruleScore, llmScore))
   const shouldPlanActions =
     matchedKeywords.length > 0
     || denyUserMatched
+    || coldStartMatched
     || (llmMatched && config.llm.reviewMode === 'auto_plan')
 
   return {
@@ -56,6 +61,11 @@ export async function detectEvent(event: GuardEvent, config: GuardConfig): Promi
     riskScore,
     suggestedActions: shouldPlanActions ? buildActionPlans(event, reason, config) : [],
   }
+}
+
+function getColdStartReasons(event: GuardEvent, config: GuardConfig) {
+  if (!config.rules.coldStartAccounts.enabled) return []
+  return event.actor?.coldStartSignals?.reasons || []
 }
 
 function buildActionPlans(event: GuardEvent, reason: string, config: GuardConfig): GuardActionPlan[] {

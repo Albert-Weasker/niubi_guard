@@ -127,7 +127,14 @@ Create `guard.config.json`:
     "keywords": ["spam template", "copy-paste", "mass mention", "repeated link"],
     "denyUsers": ["suspicious-login"],
     "allowPhrases": ["good-faith report", "security disclosure"],
-    "allowUsers": ["trusted-maintainer"]
+    "allowUsers": ["trusted-maintainer"],
+    "coldStartAccounts": {
+      "enabled": false,
+      "maxAccountAgeDays": 30,
+      "requireEmptyBio": true,
+      "requireMissingAvatar": false,
+      "minimumSignals": 2
+    }
   },
   "scan": {
     "includeIssues": true,
@@ -163,6 +170,8 @@ Create `guard.config.json`:
 ```
 
 Destructive actions are disabled by default. Maintainers can enable them per repository policy.
+
+`rules.coldStartAccounts` is optional and disabled by default. When enabled, Niubi Guard enriches each actor profile and can flag interactions from accounts that look newly created, have an empty bio, and optionally have no avatar URL. `minimumSignals` controls how many enabled signals must match before the event is labeled `cold_start_account`.
 
 ## CLI
 

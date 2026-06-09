@@ -76,3 +76,39 @@ test('detectEvent handles deny user matches case-insensitively', async () => {
   assert.equal(detection.matchedUser, 'unknown-user')
   assert.equal(detection.riskScore, 80)
 })
+
+test('detectEvent reports optional cold-start account matches', async () => {
+  const config = guardConfigSchema.parse({
+    repositories: ['owner/repo'],
+    rules: {
+      coldStartAccounts: {
+        enabled: true,
+        maxAccountAgeDays: 14,
+        requireEmptyBio: true,
+        requireMissingAvatar: false,
+        minimumSignals: 2,
+      },
+    },
+  })
+
+  const detection = await detectEvent({
+    ...baseEvent,
+    actor: {
+      login: 'new-user',
+      bio: '',
+      createdAt: new Date().toISOString(),
+      coldStartSignals: {
+        accountAgeDays: 0,
+        newAccount: true,
+        emptyBio: true,
+        missingAvatar: false,
+        reasons: ['new_account:0d<=14d', 'empty_bio'],
+      },
+    },
+  }, config)
+
+  assert.ok(detection)
+  assert.deepEqual(detection.labels, ['cold_start_account'])
+  assert.match(detection.reason, /cold_start_account:new-user/)
+  assert.equal(detection.riskScore, 45)
+})

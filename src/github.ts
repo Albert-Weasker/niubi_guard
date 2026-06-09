@@ -1,8 +1,9 @@
 import { Octokit } from '@octokit/rest'
-import type { GuardEvent, GuardIssueState, InteractionExpiry, InteractionLimit } from './types.js'
+import type { GuardActor, GuardColdStartSignals, GuardEvent, GuardIssueState, InteractionExpiry, InteractionLimit } from './types.js'
 
 export class GitHubGuardClient {
   private readonly octokit: Octokit
+  private readonly actorProfileCache = new Map<string, Promise<Partial<GuardActor>>>()
   private static readonly RATE_LIMIT_THRESHOLD = 30
   private static readonly MAX_RATE_LIMIT_WAIT_SECONDS = 120
 
@@ -101,6 +102,7 @@ export class GitHubGuardClient {
             login: issue.user.login,
             htmlUrl: issue.user.html_url,
             type: issue.user.type,
+            avatarUrl: issue.user.avatar_url,
           } : undefined,
           createdAt: issue.created_at,
           updatedAt: issue.updated_at,
@@ -151,6 +153,7 @@ export class GitHubGuardClient {
             login: comment.user.login,
             htmlUrl: comment.user.html_url,
             type: comment.user.type,
+            avatarUrl: comment.user.avatar_url,
           } : undefined,
           createdAt: comment.created_at,
           updatedAt: comment.updated_at,
@@ -164,6 +167,50 @@ export class GitHubGuardClient {
     }
 
     return events
+  }
+
+  async enrichColdStartActors(events: GuardEvent[], options: {
+    maxAccountAgeDays: number
+    requireEmptyBio: boolean
+    requireMissingAvatar: boolean
+  }): Promise<GuardEvent[]> {
+    const enrichedEvents = await Promise.all(events.map(async (event) => {
+      if (!event.actor?.login) return event
+      const profile = await this.getActorProfile(event.actor.login)
+      const actor: GuardActor = {
+        ...event.actor,
+        ...profile,
+      }
+      actor.coldStartSignals = evaluateColdStartSignals(actor, options)
+      return { ...event, actor }
+    }))
+
+    return enrichedEvents
+  }
+
+  private async getActorProfile(login: string): Promise<Partial<GuardActor>> {
+    const cacheKey = login.toLowerCase()
+    const cached = this.actorProfileCache.get(cacheKey)
+    if (cached) return cached
+
+    const promise = this.fetchActorProfile(login)
+    this.actorProfileCache.set(cacheKey, promise)
+    return promise
+  }
+
+  private async fetchActorProfile(login: string): Promise<Partial<GuardActor>> {
+    const { data } = await this.fetchPage(() => this.octokit.rest.users.getByUsername({
+      username: login,
+    }))
+
+    return {
+      login: data.login,
+      htmlUrl: data.html_url,
+      type: data.type,
+      avatarUrl: data.avatar_url,
+      bio: data.bio,
+      createdAt: data.created_at,
+    }
   }
 
   async deleteComment(repoFullName: string, commentId: string) {
@@ -232,6 +279,35 @@ export function splitRepo(repoFullName: string) {
   const [owner, repo] = repoFullName.split('/')
   if (!owner || !repo) throw new Error(`Invalid repository name: ${repoFullName}`)
   return { owner, repo }
+}
+
+export function evaluateColdStartSignals(actor: Pick<GuardActor, 'avatarUrl' | 'bio' | 'createdAt'>, options: {
+  maxAccountAgeDays: number
+  requireEmptyBio: boolean
+  requireMissingAvatar: boolean
+}, now = new Date()): GuardColdStartSignals {
+  const createdAt = actor.createdAt ? new Date(actor.createdAt) : null
+  const accountAgeDays = createdAt && Number.isFinite(createdAt.getTime())
+    ? Math.max(0, Math.floor((now.getTime() - createdAt.getTime()) / 86_400_000))
+    : undefined
+  const newAccount = typeof accountAgeDays === 'number' && accountAgeDays <= options.maxAccountAgeDays
+  const emptyBio = options.requireEmptyBio && !actor.bio?.trim()
+  const missingAvatar = options.requireMissingAvatar && !actor.avatarUrl?.trim()
+  const reasons = [
+    newAccount && typeof accountAgeDays === 'number'
+      ? `new_account:${accountAgeDays}d<=${options.maxAccountAgeDays}d`
+      : '',
+    emptyBio ? 'empty_bio' : '',
+    missingAvatar ? 'missing_avatar' : '',
+  ].filter(Boolean)
+
+  return {
+    accountAgeDays,
+    newAccount,
+    emptyBio,
+    missingAvatar,
+    reasons,
+  }
 }
 
 export function getRateLimitRetryDelay(error: unknown, options: {
