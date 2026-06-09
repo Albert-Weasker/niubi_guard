@@ -10,6 +10,18 @@ export type GuardActor = {
   login: string
   htmlUrl?: string
   type?: string
+  avatarUrl?: string
+  bio?: string | null
+  createdAt?: string
+  coldStartSignals?: GuardColdStartSignals
+}
+
+export type GuardColdStartSignals = {
+  accountAgeDays?: number
+  newAccount: boolean
+  emptyBio: boolean
+  missingAvatar: boolean
+  reasons: string[]
 }
 
 export type GuardEvent = {
@@ -26,7 +38,7 @@ export type GuardEvent = {
   updatedAt?: string
 }
 
-export type GuardDetectionLabel = 'keyword_match' | 'deny_user_match' | 'llm_malicious'
+export type GuardDetectionLabel = 'keyword_match' | 'deny_user_match' | 'cold_start_account' | 'llm_malicious'
 
 export type GuardLlmReviewMode = 'review_only' | 'auto_plan'
 

@@ -52,6 +52,11 @@ export default function GuardDashboard() {
   const [denyUsers, setDenyUsers] = useState('')
   const [allowPhrases, setAllowPhrases] = useState('')
   const [allowUsers, setAllowUsers] = useState('')
+  const [coldStartEnabled, setColdStartEnabled] = useState(false)
+  const [coldStartMaxAgeDays, setColdStartMaxAgeDays] = useState(30)
+  const [coldStartMinimumSignals, setColdStartMinimumSignals] = useState(2)
+  const [coldStartRequireEmptyBio, setColdStartRequireEmptyBio] = useState(true)
+  const [coldStartRequireMissingAvatar, setColdStartRequireMissingAvatar] = useState(false)
   const [state, setState] = useState<'open' | 'closed' | 'all'>('open')
   const [maxPages, setMaxPages] = useState(5)
   const [includeIssues, setIncludeIssues] = useState(true)
@@ -86,6 +91,13 @@ export default function GuardDashboard() {
       denyUsers: splitList(denyUsers),
       allowPhrases: splitList(allowPhrases),
       allowUsers: splitList(allowUsers),
+      coldStartAccounts: {
+        enabled: coldStartEnabled,
+        maxAccountAgeDays: coldStartMaxAgeDays,
+        requireEmptyBio: coldStartRequireEmptyBio,
+        requireMissingAvatar: coldStartRequireMissingAvatar,
+        minimumSignals: coldStartMinimumSignals,
+      },
     },
     scan: {
       includeIssues,
@@ -114,6 +126,11 @@ export default function GuardDashboard() {
     actions,
     allowPhrases,
     allowUsers,
+    coldStartEnabled,
+    coldStartMaxAgeDays,
+    coldStartMinimumSignals,
+    coldStartRequireEmptyBio,
+    coldStartRequireMissingAvatar,
     denyUsers,
     includeComments,
     includeIssues,
@@ -290,6 +307,39 @@ export default function GuardDashboard() {
               />
             </Field>
           </div>
+
+          <section className="actions-panel">
+            <div className="actions-head">
+              <div>
+                <span className="eyebrow"><UserX size={14} /> {copy.coldStartTitle}</span>
+              </div>
+              <Toggle label={copy.coldStartEnabled} checked={coldStartEnabled} onChange={setColdStartEnabled} emphasis />
+            </div>
+            <div className="action-grid">
+              <label className="number-field">
+                <span>{copy.coldStartMaxAge}: {coldStartMaxAgeDays}</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={3650}
+                  value={coldStartMaxAgeDays}
+                  onChange={(event) => setColdStartMaxAgeDays(Number(event.target.value))}
+                />
+              </label>
+              <label className="number-field">
+                <span>{copy.coldStartMinimumSignals}: {coldStartMinimumSignals}</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={3}
+                  value={coldStartMinimumSignals}
+                  onChange={(event) => setColdStartMinimumSignals(Number(event.target.value))}
+                />
+              </label>
+              <Toggle label={copy.coldStartEmptyBio} checked={coldStartRequireEmptyBio} onChange={setColdStartRequireEmptyBio} />
+              <Toggle label={copy.coldStartMissingAvatar} checked={coldStartRequireMissingAvatar} onChange={setColdStartRequireMissingAvatar} />
+            </div>
+          </section>
 
           <div className="scan-row">
             <label className="segmented">
@@ -492,7 +542,14 @@ Or use the CLI:
     "keywords": ["spam template", "copy-paste", "mass mention"],
     "denyUsers": [],
     "allowPhrases": ["good-faith report", "security disclosure"],
-    "allowUsers": ["trusted-maintainer"]
+    "allowUsers": ["trusted-maintainer"],
+    "coldStartAccounts": {
+      "enabled": false,
+      "maxAccountAgeDays": 30,
+      "requireEmptyBio": true,
+      "requireMissingAvatar": false,
+      "minimumSignals": 2
+    }
   },
   "scan": {
     "includeIssues": true,
@@ -538,7 +595,7 @@ CLI:
     {
       heading: '4. Understanding Scan Results',
       body: `Each detection includes:
-  - Labels: keyword_match / deny_user_match / llm_malicious
+  - Labels: keyword_match / deny_user_match / cold_start_account / llm_malicious
   - Matched keywords or usernames
   - AI confidence score (if LLM enabled)
   - Risk score (0-100)
@@ -661,7 +718,14 @@ pnpm install
     "keywords": ["spam template", "copy-paste", "mass mention"],
     "denyUsers": [],
     "allowPhrases": ["good-faith report", "security disclosure"],
-    "allowUsers": ["trusted-maintainer"]
+    "allowUsers": ["trusted-maintainer"],
+    "coldStartAccounts": {
+      "enabled": false,
+      "maxAccountAgeDays": 30,
+      "requireEmptyBio": true,
+      "requireMissingAvatar": false,
+      "minimumSignals": 2
+    }
   },
   "scan": {
     "includeIssues": true,
@@ -707,7 +771,7 @@ CLI：
     {
       heading: '四、理解扫描结果',
       body: `每条检测包含：
-  - 标签：keyword_match / deny_user_match / llm_malicious
+  - 标签：keyword_match / deny_user_match / cold_start_account / llm_malicious
   - 命中的关键词或用户名
   - AI 置信度（如果启用了 LLM）
   - 风险评分（0-100）

@@ -4,7 +4,14 @@
     "keywords": ["spam template", "copy-paste", "mass mention", "repeated link"],
     "denyUsers": [],
     "allowPhrases": [],
-    "allowUsers": []
+    "allowUsers": [],
+    "coldStartAccounts": {
+      "enabled": false,
+      "maxAccountAgeDays": 30,
+      "requireEmptyBio": true,
+      "requireMissingAvatar": false,
+      "minimumSignals": 2
+    }
   },
   "scan": {
     "includeIssues": true,

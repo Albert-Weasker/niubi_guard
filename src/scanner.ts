@@ -36,10 +36,18 @@ export async function scanRepositories(options: {
         }))
       }
 
-      report.repositoriesScanned += 1
-      report.eventsScanned += events.length
+      const enrichedEvents = options.config.rules.coldStartAccounts.enabled
+        ? await options.client.enrichColdStartActors(events, {
+          maxAccountAgeDays: options.config.rules.coldStartAccounts.maxAccountAgeDays,
+          requireEmptyBio: options.config.rules.coldStartAccounts.requireEmptyBio,
+          requireMissingAvatar: options.config.rules.coldStartAccounts.requireMissingAvatar,
+        })
+        : events
 
-      for (const event of events) {
+      report.repositoriesScanned += 1
+      report.eventsScanned += enrichedEvents.length
+
+      for (const event of enrichedEvents) {
         let detection = null
         try {
           detection = await detectEvent(event, options.config)

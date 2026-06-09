@@ -127,7 +127,14 @@ POST {baseUrl}/chat/completions
     "keywords": ["spam template", "copy-paste", "mass mention", "repeated link"],
     "denyUsers": ["suspicious-login"],
     "allowPhrases": ["good-faith report", "security disclosure"],
-    "allowUsers": ["trusted-maintainer"]
+    "allowUsers": ["trusted-maintainer"],
+    "coldStartAccounts": {
+      "enabled": false,
+      "maxAccountAgeDays": 30,
+      "requireEmptyBio": true,
+      "requireMissingAvatar": false,
+      "minimumSignals": 2
+    }
   },
   "scan": {
     "includeIssues": true,
@@ -163,6 +170,8 @@ POST {baseUrl}/chat/completions
 ```
 
 破坏性动作默认关闭。维护者可以按仓库策略自行开启。
+
+`rules.coldStartAccounts` 是可选配置，默认关闭。开启后，Niubi Guard 会补充读取互动账号资料，并可标记新注册、Bio 为空、以及可选的无头像 URL 等冷启动特征。`minimumSignals` 控制至少命中多少个启用信号后才标记为 `cold_start_account`。
 
 ## CLI
 
