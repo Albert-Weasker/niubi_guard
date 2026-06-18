@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-19 Asia/Shanghai
 
-This report summarizes the public GitHub issue-abuse campaigns observed by the shared guard data in `/Users/herchejane/github-star`. The data below comes from Guard threat campaigns, Guard malicious-record logs, Guard action logs, and the public GitHub issue URLs captured by those logs. It is not an official GitHub determination.
+This report summarizes GitHub issue-abuse campaigns observed by Niubi Guard's hosted protection data and public GitHub Issue records. The public report uses aggregated statistics and redacted samples; complete evidence is retained in the hosted Guard audit trail for authorized maintainers. It is not an official GitHub determination.
 
 ## Executive Summary
 
@@ -19,7 +19,7 @@ The fourth wave started on 2026-06-18 UTC and was confirmed by Guard as `github-
 | `github-issue-attack-2026-05-31` | 2026-05-31 15:38:22 to 16:21:30 | 21 | 38,022 detections | 9 | High |
 | `github-issue-abuse-wave-2026-06-18-round-4` | 2026-06-18 14:36:08 to 17:03:10 | 7 | 658 | 322 | Critical |
 
-The 2026-05-31 data contains two local campaign records: one conservative cross-repository campaign and one high-volume Guard detection campaign. The latter includes repeated detections in protected repositories, so its count should be read as Guard detections rather than unique public issues.
+The 2026-05-31 data contains two campaign records: one conservative cross-repository campaign and one high-volume Guard detection campaign. The latter includes repeated detections in protected repositories, so its count should be read as Guard detections rather than unique public issues.
 
 ## Fourth Wave Details
 
@@ -33,35 +33,35 @@ Confirmed pattern:
 - Repeated fake-star, blank-account, Stargazer-list and traffic-removal wording.
 - Threat-style GitHub report and repository-shutdown narrative.
 
-High-confidence accounts:
+High-confidence account cluster:
 
-| Login | Role | Registered at (UTC) | Public repos | Followers | Following | Issues | Repositories |
+| Account | Role | Registered at (UTC) | Public repos | Followers | Following | Issues | Repositories |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| `ananjamez108` | seed | 2026-04-10 19:11:28 | 0 | 0 | 0 | 151 | 94 |
-| `raxh64` | seed | 2026-04-09 13:07:42 | 0 | 0 | 0 | 141 | 45 |
-| `denitzade` | seed | 2026-04-09 17:12:21 | 0 | 0 | 0 | 120 | 98 |
-| `clipe22aving-iti` | associated | 2026-04-09 12:54:58 | 0 | 0 | 0 | 70 | 51 |
-| `binybow623` | associated | 2026-04-09 17:18:58 | 0 | 0 | 0 | 65 | 50 |
-| `afsant1993` | associated | 2026-04-09 19:21:48 | 0 | 0 | 0 | 64 | 46 |
-| `custpopax` | associated | 2026-04-09 19:06:14 | 0 | 0 | 0 | 47 | 34 |
+| `acct-4w-seed-01` | seed | 2026-04-10 19:11:28 | 0 | 0 | 0 | 151 | 94 |
+| `acct-4w-seed-02` | seed | 2026-04-09 13:07:42 | 0 | 0 | 0 | 141 | 45 |
+| `acct-4w-seed-03` | seed | 2026-04-09 17:12:21 | 0 | 0 | 0 | 120 | 98 |
+| `acct-4w-associated-01` | associated | 2026-04-09 12:54:58 | 0 | 0 | 0 | 70 | 51 |
+| `acct-4w-associated-02` | associated | 2026-04-09 17:18:58 | 0 | 0 | 0 | 65 | 50 |
+| `acct-4w-associated-03` | associated | 2026-04-09 19:21:48 | 0 | 0 | 0 | 64 | 46 |
+| `acct-4w-associated-04` | associated | 2026-04-09 19:06:14 | 0 | 0 | 0 | 47 | 34 |
 
-Sample captured issues and comments:
+Sample captured issues and comments, redacted for public reporting:
 
 | Account | Repository | Title / target | Reason |
 | --- | --- | --- | --- |
-| `clipe22aving-iti` | `Albert-Weasker/gitstar_niubi` | `从兴奋到震惊只用了十秒钟（过来人的忠告）` | `blacklist_user` |
-| `clipe22aving-iti` | `Zafer-Liu/Agent_Manager` | `对项目刷星行为深感失望` | `keyword_match:刷星,清理,虚假,假数` |
-| `binybow623` | `YinqiBai962/D-ARL` | `提请注意：本仓库近期涌入的Star存在严重造假嫌疑` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
-| `binybow623` | `jianxiaopai/jianlipai-career` | `[警示] 讲一个朋友刷星后翻车的真实故事（附数据）` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
-| `afsant1993` | `YinqiBai962/D-ARL` | `如果维护者和真相对话` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
-| `custpopax` | `assez/socks5-proxy` | `给其他人提个醒` | `blacklist_user` |
-| `ananjamez108` | `assez/socks5-proxy` | `[忠告] 从发现到确认的全过程` | `blacklist_user` |
+| `acct-4w-associated-01` | `repo-redacted-01` | `从兴奋到震惊只用了十秒钟（过来人的忠告）` | `deny_list_match` |
+| `acct-4w-associated-01` | `repo-redacted-02` | `对项目刷星行为深感失望` | `keyword_match:刷星,清理,虚假,假数` |
+| `acct-4w-associated-02` | `repo-redacted-03` | `提请注意：本仓库近期涌入的Star存在严重造假嫌疑` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
+| `acct-4w-associated-02` | `repo-redacted-04` | `[警示] 讲一个朋友刷星后翻车的真实故事（附数据）` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
+| `acct-4w-associated-03` | `repo-redacted-03` | `如果维护者和真相对话` | `threat_intel:github-issue-abuse-wave-2026-06-18-round-4` |
+| `acct-4w-associated-04` | `repo-redacted-05` | `给其他人提个醒` | `deny_list_match` |
+| `acct-4w-seed-01` | `repo-redacted-05` | `[忠告] 从发现到确认的全过程` | `deny_list_match` |
 
-Sample affected repositories from the campaign record include `5th-Axiom/N3N-skills`, `ChenZiHong-Gavin/LLM-Everything`, `Harzva/learn-likecc`, `Kodezi/Chronos`, `Open-X-Humanoid/HEX`, `bizspring-mall/BizSpring-Web-Mall`, `orange4664/research-skills`, `psmarter/CUDA-Practice`, and `talesofai/neta-skills`.
+Sample affected repositories are redacted in the public report. Authorized maintainers can audit the complete mapping in the hosted Guard trail.
 
 ## Protection Updates In This Repository
 
-- Added the known attacker logins to `guard.config.example.json` as deny-list entries.
+- Added redacted deny-list placeholders to `guard.config.example.json` to demonstrate the protection format without exposing public report mappings.
 - Added repeated fourth-wave phrases to `guard.config.example.json` as keyword examples.
 - Added exported threat intelligence constants in `src/threat-intel.ts`.
 - Updated the default LLM moderation prompt in `src/prompts.ts` to recognize fake-star accusation campaigns, blank-account waves, Stargazer cleanup narratives, traffic-removal threats, repository-shutdown threats, and GitHub-report threats.
@@ -76,4 +76,3 @@ Recommended response for maintainers:
 3. Use review mode for LLM moderation before enabling issue deletion, issue locking, or user blocking.
 4. Record sample URLs and action logs in issues so future maintainers can audit why a pattern was added.
 5. Avoid naming normal users from low-confidence searches. Only add accounts that match repeated behavior, public metadata signals, and cross-repository campaign evidence.
-
