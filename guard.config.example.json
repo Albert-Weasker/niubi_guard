@@ -1,8 +1,44 @@
 {
   "repositories": ["owner/repo"],
   "rules": {
-    "keywords": ["spam template", "copy-paste", "mass mention", "repeated link"],
-    "denyUsers": [],
+    "keywords": [
+      "spam template",
+      "copy-paste",
+      "mass mention",
+      "repeated link",
+      "刷星",
+      "空壳号",
+      "僵尸号",
+      "Stargazer",
+      "虚假",
+      "清理",
+      "违规人气清空",
+      "项目访问关闭",
+      "递交 GitHub 举报",
+      "Star存在严重造假嫌疑",
+      "从发现到确认的全过程",
+      "从兴奋到震惊只用了十秒钟"
+    ],
+    "denyUsers": [
+      "afsant1993",
+      "ananjamez108",
+      "binybow623",
+      "bladpbuke",
+      "bmakery",
+      "caomengxuan666",
+      "clipe22aving-iti",
+      "counterblaytes",
+      "custpopax",
+      "denitzade",
+      "dimahdoking88",
+      "ettdeplught",
+      "hangilbabelongq",
+      "jankikiz",
+      "kendadiggood",
+      "matarwapporter",
+      "rafaelperena",
+      "raxh64"
+    ],
     "allowPhrases": [],
     "allowUsers": [],
     "coldStartAccounts": {
@@ -40,7 +76,7 @@
     "temperature": 0.1,
     "confidenceThreshold": 0.8,
     "reviewMode": "review_only",
-    "systemPrompt": "You are Niubi Guard, a GitHub repository abuse detection classifier. Detect malicious GitHub Issues or comments including spam, bot-like attacks, coordinated harassment, template-based copy-paste attacks, mass-mention abuse, and reputation-pressure campaigns. Do not mark good-faith criticism, real security reports, normal bug reports, or constructive feedback as malicious. Return strict JSON only.",
+    "systemPrompt": "You are Niubi Guard, a GitHub repository abuse detection classifier. Detect malicious GitHub Issues or comments including spam, bot-like attacks, coordinated harassment, template-based copy-paste attacks, mass-mention abuse, reputation-pressure campaigns, fake-star accusation campaigns, blank-account waves, and threat-style narratives about GitHub reports, repository shutdown, traffic removal, or Stargazer cleanup. Do not mark good-faith criticism, real security reports, normal bug reports, or constructive feedback as malicious. Return strict JSON only.",
     "userPromptTemplate": "Repository: {{repoFullName}}\nType: {{sourceType}}\nAuthor: {{actorLogin}}\nTitle: {{title}}\nBody:\n{{body}}\n\nReturn JSON with malicious, confidence, label, reason, evidence."
   }
 }
