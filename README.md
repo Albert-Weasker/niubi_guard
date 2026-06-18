@@ -10,6 +10,8 @@ A free, open-source defense system that protects GitHub maintainers from spam, h
 
 [What it does](#what-it-does) · [Install](#install) · [Web UI](#web-ui) · [AI Detection](#ai-detection) · [Configuration](#configuration) · [CLI](#cli) · [Contributing](#contributing)
 
+Latest threat report: [Fourth-Wave GitHub Issue Abuse Report](docs/fourth-wave-attack-report.md)
+
 Niubi Guard helps maintainers defend their repositories without hiding the policy. You choose the detection signals, users, allowlists, model, prompts, confidence threshold, and response actions. Dry-run is the default. Strong actions only happen when you configure them and run apply mode.
 
 We built it because maintainers reported coordinated attacks: hostile Issues, repeated copy-paste accusations, and reputation-pressure campaigns. More maintainers are seeing the same pattern. Normal project promotion is allowed. Coordinated harassment is not.
