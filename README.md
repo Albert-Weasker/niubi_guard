@@ -4,11 +4,17 @@
 
 # Niubi Guard
 
+<p align="center">
+  <a href="https://github.com/Albert-Weasker/niubi_guard/blob/main/docs/protected-by-niubi-guard.md">
+    <img src="https://img.shields.io/badge/protected%20by-niubi_guard-00bcd4?style=for-the-badge" alt="Protected by Niubi Guard" />
+  </a>
+</p>
+
 A free, open-source defense system that protects GitHub maintainers from spam, harassment, and coordinated abuse.
 
 [Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
 
-[What it does](#what-it-does) · [Install](#install) · [Web UI](#web-ui) · [AI Detection](#ai-detection) · [Configuration](#configuration) · [CLI](#cli) · [Contributing](#contributing)
+[What it does](#what-it-does) · [Install](#install) · [Web UI](#web-ui) · [AI Detection](#ai-detection) · [Configuration](#configuration) · [Protected Badge](docs/protected-by-niubi-guard.md) · [CLI](#cli) · [Contributing](#contributing)
 
 Latest threat report: [Fourth-Wave GitHub Issue Abuse Report](docs/fourth-wave-attack-report.md) · [Attack Corpus](docs/attack-corpus.md)
 
