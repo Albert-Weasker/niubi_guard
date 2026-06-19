@@ -4,11 +4,17 @@
 
 # Niubi Guard
 
+<p align="center">
+  <a href="https://github.com/Albert-Weasker/niubi_guard/blob/main/docs/protected-by-niubi-guard.md">
+    <img src="https://img.shields.io/badge/protected%20by-niubi_guard-00bcd4?style=for-the-badge" alt="Protected by Niubi Guard" />
+  </a>
+</p>
+
 一个免费开源的 GitHub 仓库防御系统，保护维护者免受垃圾信息、骚扰和协同攻击的侵扰。
 
 [Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
 
-[能力](#能力) · [安装](#安装) · [Web UI](#web-ui) · [AI 侦测](#ai-侦测) · [配置](#配置) · [CLI](#cli) · [贡献](#贡献)
+[能力](#能力) · [安装](#安装) · [Web UI](#web-ui) · [AI 侦测](#ai-侦测) · [配置](#配置) · [防护徽章](docs/protected-by-niubi-guard.md) · [CLI](#cli) · [贡献](#贡献)
 
 最新攻击报告：[GitHub Issue 第四轮滥用攻击报告](docs/fourth-wave-attack-report.md) · [攻击语料库](docs/attack-corpus.md)
 
