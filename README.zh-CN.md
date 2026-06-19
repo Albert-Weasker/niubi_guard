@@ -10,7 +10,7 @@
 
 [能力](#能力) · [安装](#安装) · [Web UI](#web-ui) · [AI 侦测](#ai-侦测) · [配置](#配置) · [CLI](#cli) · [贡献](#贡献)
 
-最新攻击报告：[GitHub Issue 第四轮滥用攻击报告](docs/fourth-wave-attack-report.md)
+最新攻击报告：[GitHub Issue 第四轮滥用攻击报告](docs/fourth-wave-attack-report.md) · [攻击语料库](docs/attack-corpus.md)
 
 Niubi Guard 帮助维护者防护仓库，同时保持策略透明。检测信号、用户名、放行规则、模型、提示词、置信度阈值和响应动作都由你配置。默认是 dry-run。只有当你启用动作并进入 apply mode，强动作才会执行。
 
