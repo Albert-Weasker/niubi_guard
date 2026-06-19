@@ -5,7 +5,7 @@
 # Niubi Guard
 
 <p align="center">
-  <a href="https://github.com/Albert-Weasker/niubi_guard/blob/main/docs/protected-by-niubi-guard.md">
+  <a href="https://github.com/Albert-Weasker/niubi_guard/blob/main/docs/protected-by-niubi-guard.zh-CN.md">
     <img src="https://img.shields.io/badge/protected%20by-niubi_guard-00bcd4?style=for-the-badge" alt="Protected by Niubi Guard" />
   </a>
 </p>
@@ -14,9 +14,9 @@
 
 [Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
 
-[能力](#能力) · [安装](#安装) · [Web UI](#web-ui) · [AI 侦测](#ai-侦测) · [配置](#配置) · [防护徽章](docs/protected-by-niubi-guard.md) · [CLI](#cli) · [贡献](#贡献)
+[能力](#能力) · [安装](#安装) · [Web UI](#web-ui) · [AI 侦测](#ai-侦测) · [配置](#配置) · [防护徽章](docs/protected-by-niubi-guard.zh-CN.md) · [CLI](#cli) · [贡献](#贡献)
 
-最新攻击报告：[GitHub Issue 第四轮滥用攻击报告](docs/fourth-wave-attack-report.md) · [攻击语料库](docs/attack-corpus.md)
+最新攻击报告：[GitHub Issue 第四轮滥用攻击报告](docs/fourth-wave-attack-report.zh-CN.md) · [攻击语料库](docs/attack-corpus.zh-CN.md)
 
 Niubi Guard 帮助维护者防护仓库，同时保持策略透明。检测信号、用户名、放行规则、模型、提示词、置信度阈值和响应动作都由你配置。默认是 dry-run。只有当你启用动作并进入 apply mode，强动作才会执行。
 
