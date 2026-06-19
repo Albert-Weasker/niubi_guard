@@ -22,7 +22,7 @@ Niubi Guard helps maintainers defend their repositories without hiding the polic
 
 We built it because maintainers reported coordinated attacks: hostile Issues, repeated copy-paste accusations, and reputation-pressure campaigns. More maintainers are seeing the same pattern. Normal project promotion is allowed. Coordinated harassment is not.
 
-> **Don't want to self-host?** Use the free hosted version at [niubistar.com/guard](https://www.niubistar.com/guard) — no configuration needed. The open-source version is continuously improved. Issues and feedback are welcome on [GitHub](https://github.com/Albert-Weasker/niubi_guard/issues).
+> **Being harassed by malicious Issues?** Any maintainer can deploy Niubi Guard for their own repository, use the free hosted version at [niubistar.com/guard](https://www.niubistar.com/guard), or contact [support@niubistar.com](mailto:support@niubistar.com) for help understanding and responding to an active attack.
 
 ## What it does
 
