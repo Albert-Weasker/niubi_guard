@@ -2,6 +2,14 @@
   <img src="./public/logo.png" alt="Niubi Guard" width="420" />
 </p>
 
+<p align="center">
+  <a href="https://trendshift.io/repositories/45999?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-45999" target="_blank" rel="noopener noreferrer">
+    <img src="https://trendshift.io/api/badge/trendshift/repositories/45999/daily?language=TypeScript" alt="Albert-Weasker%2Fniubi_guard | Trendshift" width="250" height="55"/>
+  </a>
+</p>
+
+Trendshift snapshots GitHub's daily Trending list and runs its own trending list. The dynamic badges below mark the best position this repository has reached on each platform. They refresh automatically as its position climbs.
+
 # Niubi Guard
 
 <p align="center">
