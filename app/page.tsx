@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { FormEvent, useMemo, useState } from 'react'
 import type { GuardConfig } from '@/src/config'
+import { ATLAS_CLOUD_LLM_PRESET } from '@/src/llm-providers'
 import { DEFAULT_LLM_SYSTEM_PROMPT, DEFAULT_LLM_USER_PROMPT_TEMPLATE } from '@/src/prompts'
 import type { GuardScanReport } from '@/src/types'
 import { locales, type UILocale } from './locales'
@@ -83,6 +84,13 @@ export default function GuardDashboard() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showDocs, setShowDocs] = useState(false)
+
+  const applyAtlasCloudPreset = () => {
+    setLlmEnabled(true)
+    setLlmBaseUrl(ATLAS_CLOUD_LLM_PRESET.baseUrl)
+    setLlmApiKey(ATLAS_CLOUD_LLM_PRESET.apiKeyEnv)
+    setLlmModel(ATLAS_CLOUD_LLM_PRESET.model)
+  }
 
   const config = useMemo<GuardConfig>(() => ({
     repositories: splitList(repositories),
@@ -372,6 +380,9 @@ export default function GuardDashboard() {
               </div>
               <Toggle label={copy.aiEnabled} checked={llmEnabled} onChange={setLlmEnabled} emphasis />
             </div>
+            <button className="preset-button" type="button" onClick={applyAtlasCloudPreset}>
+              <Sparkles size={16} /> {copy.atlasCloudPreset}
+            </button>
             <div className="ai-grid">
               <Field label={copy.baseUrl} icon={<Radar size={17} />}>
                 <input value={llmBaseUrl} onChange={(event) => setLlmBaseUrl(event.target.value)} />

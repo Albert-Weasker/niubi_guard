@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { GuardConfig } from './config.js'
+import { resolveLlmApiKey } from './llm-providers.js'
 import type { GuardEvent, GuardLlmResult } from './types.js'
 
 const llmResponseSchema = z.object({
@@ -27,7 +28,8 @@ type ChatCompletionResponse = {
 }
 
 export async function classifyEventWithLlm(event: GuardEvent, config: GuardConfig): Promise<GuardLlmResult> {
-  if (!config.llm.apiKey.trim()) {
+  const apiKey = resolveLlmApiKey(config.llm.apiKey, config.llm.baseUrl)
+  if (!apiKey) {
     throw new Error('LLM detection is enabled but llm.apiKey is empty')
   }
   if (!config.llm.model.trim()) {
@@ -43,7 +45,7 @@ export async function classifyEventWithLlm(event: GuardEvent, config: GuardConfi
       method: 'POST',
       signal: controller.signal,
       headers: {
-        Authorization: `Bearer ${config.llm.apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
