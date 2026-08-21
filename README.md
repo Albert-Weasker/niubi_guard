@@ -240,7 +240,7 @@ Niubi Guard is a defensive project. It does not provide growth services, manipul
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Albert-Weasker/niubi_guard&type=Date)](https://www.star-history.com/#Albert-Weasker/niubi_guard&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=Albert-Weasker/niubi_guard&type=Date)](https://star-history.dera.page/#Albert-Weasker/niubi_guard&Date)
 
 ## Roadmap
 
