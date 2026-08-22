@@ -45,6 +45,7 @@ button {
 .status-strip,
 .eyebrow,
 .run-button,
+.preset-button,
 .toggle,
 .action-toggle,
 .field > span,
@@ -373,6 +374,17 @@ h2 {
 .run-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.preset-button {
+  width: fit-content;
+  gap: 8px;
+  border: 1px solid #0f766e;
+  border-radius: 8px;
+  background: #eefdfa;
+  color: #0f5d59;
+  padding: 9px 12px;
+  font-weight: 850;
 }
 
 .setup-grid,
