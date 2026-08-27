@@ -20,7 +20,7 @@ Trendshift snapshots GitHub's daily Trending list and runs its own trending list
 
 A free, open-source defense system that protects GitHub maintainers from spam, harassment, and coordinated abuse.
 
-[Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md)
+[Apache-2.0 License](./LICENSE) · [Homepage](#web-ui) · [GitHub](https://github.com/Albert-Weasker/niubi_guard) · [English](./README.md) · [简体中文](./README.zh-CN.md) · [日本語](./README.ja-JP.md)
 
 [What it does](#what-it-does) · [Install](#install) · [Web UI](#web-ui) · [AI Detection](#ai-detection) · [Configuration](#configuration) · [Protected Badge](docs/protected-by-niubi-guard.md) · [CLI](#cli) · [Contributing](#contributing)
 
